@@ -146,6 +146,12 @@ module Drone
         command << "-c #{config.knife_config_path}"
 
         Dir.chdir(config.workspace_path)
+        logger.info("current working dir:\n#{Dir.pwd}\n")
+        up_dirs = Dir.glob("#{Dir.pwd}/{roles,environments,data_bags}")
+        up_dirs.each do |d|
+          logger.info "#{d} contains:"
+          Dir.entries(d).select{|f| !File.directory? f}.map{|f| puts "  #{f}\n"}
+        end
 
         cmd = Mixlib::ShellOut.new(command.join(" "))
         cmd.run_command
